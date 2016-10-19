@@ -23,6 +23,26 @@ or install:
 $ make install
 ```
 
+Usage menu:
+```
+$ jsoned -h
+
+usage: jsoned [-v value] [-s] [-i infile] [-o outfile] keypath
+
+examples: jsoned keypath                      read value from stdin
+      or: jsoned -i infile keypath            read value from infile
+      or: jsoned -v value keypath             edit value
+      or: jsoned -v value -o outfile keypath  edit value and write to outfile
+
+options:
+      -v value             Edit JSON key path value
+      -i infile            Use input file instead of stdin
+      -o outfile           Use output file instead of stdout
+      -r                   Use raw values, otherwise types are auto-detected
+      keypath              JSON key path (like "name.last")
+```
+
+
 Examples
 --------
 
