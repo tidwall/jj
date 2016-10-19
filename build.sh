@@ -1,13 +1,14 @@
 #!/bin/bash
 set -e
 
-VERSION="0.0.1"
+VERSION="0.1.0"
 PROTECTED_MODE="no"
 
 export GO15VENDOREXPERIMENT=1
 
 cd $(dirname "${BASH_SOURCE[0]}")
 OD="$(pwd)"
+WD=$OD
 
 # temp directory for storing isolated environment.
 TMP="$(mktemp -d -t sdb.XXXX)"
@@ -28,6 +29,36 @@ if [ "$NOCOPY" != "1" ]; then
 		fi
 	done
 	cd $WD
+fi
+
+package(){
+	echo Packaging $1 Binary
+	bdir=jsoned-${VERSION}-$2-$3
+	rm -rf packages/$bdir && mkdir -p packages/$bdir
+	GOOS=$2 GOARCH=$3 ./build.sh
+	if [ "$2" == "windows" ]; then
+		mv jsoned packages/$bdir/jsoned.exe
+	else
+		mv jsoned packages/$bdir
+	fi
+	cp README.md packages/$bdir
+	cd packages
+	if [ "$2" == "linux" ]; then
+		tar -zcf $bdir.tar.gz $bdir
+	else
+		zip -r -q $bdir.zip $bdir
+	fi
+	rm -rf $bdir
+	cd ..
+}
+
+if [ "$1" == "package" ]; then
+	rm -rf packages/
+	package "Windows" "windows" "amd64"
+	package "Mac" "darwin" "amd64"
+	package "Linux" "linux" "amd64"
+	package "FreeBSD" "freebsd" "amd64"
+	exit
 fi
 
 # build and store objects into original directory.
