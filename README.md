@@ -62,7 +62,7 @@ Jane
 
 ### Setting a value
 
-The [path syntax](https://github.com/tidwall/sjson#path-syntax) for setting values is slightly different than for getting values.
+The [path syntax](https://github.com/tidwall/sjson#path-syntax) for setting values has a couple of tiny differences than for getting values.
 
 The `-v value` option is auto-detected as a Number, Boolean, Null, or String. 
 You can override the auto-detection and input raw JSON by including the `-r` option.
