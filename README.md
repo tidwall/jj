@@ -4,7 +4,7 @@ jsoned - JSON Stream Editor
 jsoned is a command line utility that provides a fast and simple way to retrieve or update values from JSON documents.
 It uses [GJSON](https://github.com/tidwall/gjson) and [SJSON](https://github.com/tidwall/sjson) under the hood. 
 
-It's fast because avoids parsing irrelevant values, skipping over values that do not apply, and abort as soon as the target value has been found and/or updated.
+It's fast because avoids parsing irrelevant sections of json, skipping over values that do not apply, and aborts as soon as the target value has been found or updated.
 
 Getting started
 ---------------
