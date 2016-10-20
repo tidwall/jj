@@ -9,8 +9,8 @@
 
 <p align="center">set a json value quickly</a></p>
 
-SJSON is a Go package the provides a **very fast** and simple way to set a value in a json document. The reason for this library it to provide efficient json updating for the [SummitDB](https://github.com/tidwall/summitdb) project. 
-For quickly retrieving json values check out the [GJSON](https://github.com/tidwall/gjson).
+SJSON is a Go package that provides a very fast and simple way to set a value in a json document. The purpose for this library is to provide efficient json updating for the [SummitDB](https://github.com/tidwall/summitdb) project. 
+For quickly retrieving json values check out [GJSON](https://github.com/tidwall/gjson).
 
 Getting Started
 ===============
@@ -30,7 +30,7 @@ Set a value
 -----------
 Set sets the value for the specified path. 
 A path is in dot syntax, such as "name.last" or "age". 
-This function expects that the json is well-formed and validates. 
+This function expects that the json is well-formed and validated. 
 Invalid json will not panic, but it may return back unexpected results.
 Invalid paths may return an error.
 
@@ -182,6 +182,33 @@ println(value)
 
 // Output:
 // {"friends":["Andy","Carol",null,null,"Sara"]
+```
+
+Delete a value:
+```go
+value, _ := sjson.Delete(`{"name":{"first":"Sara","last":"Anderson"}}`, "name.first")
+println(value)
+
+// Output:
+// {"name":{"last":"Anderson"}}
+```
+
+Delete an array value:
+```go
+value, _ := sjson.Delete(`{"friends":["Andy","Carol"]}`, "friends.1")
+println(value)
+
+// Output:
+// {"friends":["Andy"]}
+```
+
+Delete the last array value:
+```go
+value, _ := sjson.Delete(`{"friends":["Andy","Carol"]}`, "friends.-1")
+println(value)
+
+// Output:
+// {"friends":["Andy"]}
 ```
 
 ## Contact

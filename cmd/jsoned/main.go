@@ -15,7 +15,7 @@ var (
 	version = "0.0.1"
 	tag     = "jsoned - JSON Stream Editor " + version
 	usage   = `
-usage: jsoned [-v value] [-s] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-s] [-D] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -24,6 +24,7 @@ examples: jsoned keypath                      read value from stdin
 
 options:
       -v value             Edit JSON key path value
+      -D                   Delete the value at the specified key path
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       -r                   Use raw values, otherwise types are auto-detected
@@ -38,6 +39,7 @@ type args struct {
 	outfile *string
 	value   *string
 	raw     bool
+	del     bool
 	keypath string
 }
 
@@ -82,6 +84,8 @@ func parseArgs() args {
 			}
 		case "-r":
 			a.raw = true
+		case "-D":
+			a.del = true
 		case "-h", "--help", "-?":
 			help()
 		}
@@ -107,7 +111,12 @@ func main() {
 	if err != nil {
 		goto fail
 	}
-	if a.value != nil {
+	if a.del {
+		outb, err = sjson.DeleteBytes(input, a.keypath)
+		if err != nil {
+			goto fail
+		}
+	} else if a.value != nil {
 		raw := a.raw
 		val := *a.value
 		if !raw {
