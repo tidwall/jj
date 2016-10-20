@@ -31,7 +31,7 @@ Usage menu:
 ```
 $ jsoned -h
 
-usage: jsoned [-v value] [-s] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-s] [-D] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -40,6 +40,7 @@ examples: jsoned keypath                      read value from stdin
 
 options:
       -v value             Edit JSON key path value
+      -D                   Delete the value at the specified key path
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       -r                   Use raw values, otherwise types are auto-detected
@@ -138,6 +139,26 @@ Start new JSON document:
 ```sh
 $ echo '' | jsoned -v 'Sam' name.first
 {"name":{"first":"Sam"}}
+```
+
+### Deleting a value
+
+Delete a value:
+```sh
+$ echo '{"age":46,"name":{"first":"Tom","last":"Smith"}}' | jsoned -D age
+{"name":{"first":"Tom","last":"Smith"}}
+```
+
+Delete an array value by index:
+```sh
+$ echo '{"friends":["Andy","Carol"]}' | ./jsoned -D friends.0
+{"friends":["Carol"]}
+```
+
+Delete last item in array:
+```sh
+$ echo '{"friends":["Andy","Carol"]}' | ./jsoned -D friends.-1
+{"friends":["Andy"]}
 ```
 
 ## Contact
