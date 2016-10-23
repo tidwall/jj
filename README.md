@@ -102,13 +102,13 @@ $ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v Andy name.first
 Set a new value:
 ```sh
 $ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v 46 age
-{"age":46,"name":{"first":"Andy","last":"Smith"}}
+{"age":46,"name":{"first":"Tom","last":"Smith"}}
 ```
 
 Set a new nested value:
 ```sh
 $ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v relax task.today
-{"task":{"today":"relax"},"name":{"first":"Andy","last":"Smith"}}
+{"task":{"today":"relax"},"name":{"first":"Tom","last":"Smith"}}
 ```
 
 Replace an array value by index:
