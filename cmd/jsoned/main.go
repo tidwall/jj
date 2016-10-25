@@ -15,7 +15,7 @@ var (
 	version = "0.0.1"
 	tag     = "jsoned - JSON Stream Editor " + version
 	usage   = `
-usage: jsoned [-v value] [-s] [-D] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-r] [-D] [-O] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -24,10 +24,11 @@ examples: jsoned keypath                      read value from stdin
 
 options:
       -v value             Edit JSON key path value
+      -r                   Use raw values, otherwise types are auto-detected
+      -O                   Performance boost for value updates.
       -D                   Delete the value at the specified key path
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
-      -r                   Use raw values, otherwise types are auto-detected
       keypath              JSON key path (like "name.last")
 
 for more info: https://github.com/tidwall/jsoned
@@ -40,6 +41,7 @@ type args struct {
 	value   *string
 	raw     bool
 	del     bool
+	opt     bool
 	keypath string
 }
 
@@ -86,6 +88,8 @@ func parseArgs() args {
 			a.raw = true
 		case "-D":
 			a.del = true
+		case "-O":
+			a.opt = true
 		case "-h", "--help", "-?":
 			help()
 		}
@@ -133,12 +137,18 @@ func main() {
 				raw = true
 			}
 		}
+		opts := &sjson.Options{}
+		if a.opt {
+			opts.Optimistic = true
+			opts.ReplaceInPlace = true
+		}
 		if raw {
 			// set as raw block
-			outb, err = sjson.SetRawBytes(input, a.keypath, []byte(val))
+			outb, err = sjson.SetRawBytesOptions(
+				input, a.keypath, []byte(val), opts)
 		} else {
 			// set as a string
-			outb, err = sjson.SetBytes(input, a.keypath, val)
+			outb, err = sjson.SetBytesOptions(input, a.keypath, val, opts)
 		}
 		if err != nil {
 			goto fail

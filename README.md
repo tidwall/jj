@@ -31,7 +31,7 @@ Usage menu:
 ```
 $ jsoned -h
 
-usage: jsoned [-v value] [-s] [-D] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-r] [-D] [-O] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -40,11 +40,13 @@ examples: jsoned keypath                      read value from stdin
 
 options:
       -v value             Edit JSON key path value
+      -r                   Use raw values, otherwise types are auto-detected
+      -O                   Performance boost for value updates.
       -D                   Delete the value at the specified key path
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
-      -r                   Use raw values, otherwise types are auto-detected
       keypath              JSON key path (like "name.last")
+
 ```
 
 
@@ -160,6 +162,14 @@ Delete last item in array:
 $ echo '{"friends":["Andy","Carol"]}' | ./jsoned -D friends.-1
 {"friends":["Andy"]}
 ```
+
+### Optimisticlly update a value
+
+The `-O` option can be used when the caller expects that a value at the
+specified keypath already exists.
+
+Using this option can speed up an operation by as much as 6x, but
+slow down as much as 20% when the value does not exist.
 
 ## Contact
 Josh Baker [@tidwall](http://twitter.com/tidwall)
