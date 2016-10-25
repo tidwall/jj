@@ -163,13 +163,21 @@ $ echo '{"friends":["Andy","Carol"]}' | ./jsoned -D friends.-1
 {"friends":["Andy"]}
 ```
 
-### Optimisticlly update a value
+### Optimistically update a value
 
 The `-O` option can be used when the caller expects that a value at the
 specified keypath already exists.
 
 Using this option can speed up an operation by as much as 6x, but
 slow down as much as 20% when the value does not exist.
+
+For example:
+
+```
+echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v Tim -O name.first
+```
+
+The `-O` tells jsoned that the `name.first` likely exists so try a fasttrack operation first.
 
 ## Contact
 Josh Baker [@tidwall](http://twitter.com/tidwall)
