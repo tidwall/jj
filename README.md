@@ -6,10 +6,10 @@
 JSON Stream Editor
 </p>
 
-jsoned is a command line utility that provides a fast and simple way to retrieve or update values from JSON documents.
+jsoned is a command line utility that provides a [fast](#performance) and simple way to retrieve or update values from JSON documents.
 It uses [GJSON](https://github.com/tidwall/gjson) and [SJSON](https://github.com/tidwall/sjson) under the hood. 
 
-It's fast because it avoids parsing irrelevant sections of json, skipping over values that do not apply, and aborts as soon as the target value has been found or updated.
+It's [fast](#performance) because it avoids parsing irrelevant sections of json, skipping over values that do not apply, and aborts as soon as the target value has been found or updated.
 
 Getting started
 ---------------
@@ -178,6 +178,59 @@ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v Tim -O name.first
 ```
 
 The `-O` tells jsoned that the `name.first` likely exists so try a fasttrack operation first.
+
+## Performance
+
+A quick comparison of jsoned to [jq](https://stedolan.github.io/jq/). The test [json file](https://github.com/zemirco/sf-city-lots-json) is 180MB file of 206,560 city parcels in San Francisco.
+
+*Tested on a 2015 Macbook Pro running jq 1.5 and jsoned 0.2.1*
+
+#### Get the lot number for the parcel at index 10000
+
+jq:
+
+```bash
+$ time cat citylots.json | jq -cM .features[10000].properties.LOT_NUM
+"091"
+
+real    0m5.486s
+user    0m4.870s
+sys     0m0.686s
+```
+
+jsoned:
+
+```bash
+$ time cat citylots.json | jsoned -r features.10000.properties.LOT_NUM
+"091"
+
+real    0m0.344s
+user    0m0.161s
+sys	    0m0.312s
+```
+
+#### Update the lot number for the parcel at index 10000
+
+jq:
+
+```bash
+$ time cat citylots.json | jq -cM '.features[10000].properties.LOT_NUM="12A"' > /dev/null
+
+real    0m13.579s
+user    0m16.484s
+sys     0m1.310s
+```
+
+jsoned:
+
+```bash
+$ time cat citylots.json | jsoned -O -v 12A features.10000.properties.LOT_NUM > /dev/null
+
+real    0m0.635s
+user    0m0.343s
+sys     0m0.563s
+```
+
 
 ## Contact
 Josh Baker [@tidwall](http://twitter.com/tidwall)
