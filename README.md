@@ -31,7 +31,7 @@ Usage menu:
 ```
 $ jsoned -h
 
-usage: jsoned [-v value] [-r] [-D] [-O] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-r] [-D] [-O] [-p] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -42,7 +42,8 @@ options:
       -v value             Edit JSON key path value
       -r                   Use raw values, otherwise types are auto-detected
       -O                   Performance boost for value updates.
-      -D                   Delete the value at the specified key path
+	  -D                   Delete the value at the specified key path
+	  -p                   Make json pretty, keypath is optional with this flag
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -178,6 +179,30 @@ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -v Tim -O name.first
 ```
 
 The `-O` tells jsoned that the `name.first` likely exists so try a fasttrack operation first.
+
+## Pretty printing
+
+The `-p` flag will make the output json pretty.
+
+```
+$ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -p name
+{
+  "first": "Tom",
+  "last": "Smith"
+}
+```
+
+Also the keypath is optional when the `-p` flag is specified, allowing for the entire json document to be made pretty.
+
+```
+$ echo '{"name":{"first":"Tom","last":"Smith"}}' | jsoned -p
+{
+  "name": {
+    "first": "Tom",
+    "last": "Smith"
+  }
+}
+```
 
 ## Performance
 

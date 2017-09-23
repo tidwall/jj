@@ -28,7 +28,7 @@ options:
       -r                   Use raw values, otherwise types are auto-detected
       -O                   Performance boost for value updates.
 	  -D                   Delete the value at the specified key path
-	  -p                   Make json pretty
+	  -p                   Make json pretty, keypath is optional with this flag
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
