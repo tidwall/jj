@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/tidwall/gjson"
+	"github.com/tidwall/pretty"
 	"github.com/tidwall/sjson"
 )
 
@@ -15,7 +16,7 @@ var (
 	version = "0.0.1"
 	tag     = "jsoned - JSON Stream Editor " + version
 	usage   = `
-usage: jsoned [-v value] [-r] [-D] [-O] [-i infile] [-o outfile] keypath
+usage: jsoned [-v value] [-r] [-D] [-O] [-p] [-i infile] [-o outfile] keypath
 
 examples: jsoned keypath                      read value from stdin
       or: jsoned -i infile keypath            read value from infile
@@ -26,7 +27,8 @@ options:
       -v value             Edit JSON key path value
       -r                   Use raw values, otherwise types are auto-detected
       -O                   Performance boost for value updates.
-      -D                   Delete the value at the specified key path
+	  -D                   Delete the value at the specified key path
+	  -p                   Make json pretty
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -36,13 +38,15 @@ for more info: https://github.com/tidwall/jsoned
 )
 
 type args struct {
-	infile  *string
-	outfile *string
-	value   *string
-	raw     bool
-	del     bool
-	opt     bool
-	keypath string
+	infile    *string
+	outfile   *string
+	value     *string
+	raw       bool
+	del       bool
+	opt       bool
+	keypathok bool
+	keypath   string
+	pretty    bool
 }
 
 func parseArgs() args {
@@ -65,12 +69,13 @@ func parseArgs() args {
 	for i := 1; i < len(os.Args); i++ {
 		switch os.Args[i] {
 		default:
-			if a.keypath == "" {
+			if !a.keypathok {
+				a.keypathok = true
 				a.keypath = os.Args[i]
 			} else {
 				fail("unknown option argument: \"%s\"", a.keypath)
 			}
-		case "-p", "-v", "-i", "-o":
+		case "-v", "-i", "-o":
 			arg := os.Args[i]
 			i++
 			if i >= len(os.Args) {
@@ -86,6 +91,8 @@ func parseArgs() args {
 			}
 		case "-r":
 			a.raw = true
+		case "-p":
+			a.pretty = true
 		case "-D":
 			a.del = true
 		case "-O":
@@ -94,7 +101,7 @@ func parseArgs() args {
 			help()
 		}
 	}
-	if a.keypath == "" {
+	if !a.keypathok && !a.pretty {
 		fail("missing required option: \"keypath\"")
 	}
 	return a
@@ -154,11 +161,15 @@ func main() {
 			goto fail
 		}
 	} else {
-		res := gjson.GetBytes(input, a.keypath)
-		if a.raw {
-			outs = res.Raw
+		if !a.keypathok {
+			outb = input
 		} else {
-			outs = res.String()
+			res := gjson.GetBytes(input, a.keypath)
+			if a.raw {
+				outs = res.Raw
+			} else {
+				outs = res.String()
+			}
 		}
 	}
 	if a.outfile == nil {
@@ -169,10 +180,19 @@ func main() {
 			goto fail
 		}
 	}
+
 	if outb != nil {
-		f.Write(outb)
+		if a.pretty {
+			f.Write(pretty.Pretty(outb))
+		} else {
+			f.Write(outb)
+		}
 	} else {
-		f.WriteString(outs)
+		if a.pretty {
+			f.Write(pretty.Pretty([]byte(outs)))
+		} else {
+			f.WriteString(outs)
+		}
 	}
 	f.Close()
 	return

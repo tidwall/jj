@@ -187,6 +187,16 @@ func (t Result) Array() []Result {
 	return r.a
 }
 
+// IsObject returns true if the result value is a JSON object.
+func (t Result) IsObject() bool {
+	return t.Type == JSON && len(t.Raw) > 0 && t.Raw[0] == '{'
+}
+
+// IsObject returns true if the result value is a JSON array.
+func (t Result) IsArray() bool {
+	return t.Type == JSON && len(t.Raw) > 0 && t.Raw[0] == '['
+}
+
 // ForEach iterates through values.
 // If the result represents a non-existent value, then no values will be iterated.
 // If the result is an Object, the iterator will pass the key and value of each item.
@@ -1438,7 +1448,7 @@ func unescape(json string) string { //, error) {
 				i += 5
 				if utf16.IsSurrogate(r) {
 					// need another code
-					if len(json) >= 6 && json[i] == '\\' && json[i+1] == 'u' {
+					if len(json[i:]) >= 6 && json[i] == '\\' && json[i+1] == 'u' {
 						// we expect it to be correct so just consume it
 						r = utf16.DecodeRune(r, runeit(json[i+2:]))
 						i += 6
