@@ -16,8 +16,6 @@ Getting started
 
 ## Install
 
-There're pre-built binaries for Mac, Linux, FreeBSD and Windows on the releases page.
-
 ### Mac (Homebrew)
 
 ```
