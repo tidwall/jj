@@ -190,7 +190,6 @@ func main() {
 	if a.pretty {
 		f.Write(pretty.Pretty(outb))
 	} else if a.ugly {
-		fmt.Printf("%s\n", pretty.Ugly(outb))
 		f.Write(pretty.Ugly(outb))
 	} else {
 		f.Write(outb)
