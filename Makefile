@@ -1,10 +1,10 @@
 all: 
 	@./build.sh
 clean:
-	@rm -f jsoned
+	@rm -f jj
 install: all
 	@cp jsoned /usr/local/bin
 uninstall: 
-	@rm -f /usr/local/bin/jsoned
+	@rm -f /usr/local/bin/jj
 package:
 	@NOCOPY=1 ./build.sh package

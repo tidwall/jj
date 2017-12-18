@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-VERSION="0.3.1"
+VERSION="1.0.0"
 PROTECTED_MODE="no"
 
 export GO15VENDOREXPERIMENT=1
@@ -12,13 +12,13 @@ WD=$OD
 
 package(){
 	echo Packaging $1 Binary
-	bdir=jsoned-${VERSION}-$2-$3
+	bdir=jj-${VERSION}-$2-$3
 	rm -rf packages/$bdir && mkdir -p packages/$bdir
 	GOOS=$2 GOARCH=$3 ./build.sh
 	if [ "$2" == "windows" ]; then
-		mv jsoned packages/$bdir/jsoned.exe
+		mv jj packages/$bdir/jj.exe
 	else
-		mv jsoned packages/$bdir
+		mv jj packages/$bdir
 	fi
 	cp README.md packages/$bdir
 	cd packages
@@ -49,11 +49,11 @@ trap rmtemp EXIT
 
 if [ "$NOCOPY" != "1" ]; then
 	# copy all files to an isloated directory.
-	WD="$TMP/src/github.com/tidwall/jsoned"
+	WD="$TMP/src/github.com/tidwall/jj"
 	export GOPATH="$TMP"
 	for file in `find . -type f`; do
 		# TODO: use .gitignore to ignore, or possibly just use git to determine the file list.
-		if [[ "$file" != "." && "$file" != ./.git* && "$file" != ./jsoned ]]; then
+		if [[ "$file" != "." && "$file" != ./.git* && "$file" != ./jj ]]; then
 			mkdir -p "$WD/$(dirname "${file}")"
 			cp -P "$file" "$WD/$(dirname "${file}")"
 		fi
@@ -63,5 +63,5 @@ fi
 
 
 # build and store objects into original directory.
-go build -ldflags "-X main.version=$VERSION" -o "$OD/jsoned" cmd/jsoned/*.go
+go build -ldflags "-X main.version=$VERSION" -o "$OD/jj" cmd/jj/*.go
 
