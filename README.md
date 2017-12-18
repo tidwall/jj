@@ -32,7 +32,8 @@ make
 Or [download a pre-built binary](https://github.com/tidwall/jj/releases) for Linux, OSX, Windows, or FreeBSD.
 
 
-Usage menu:
+### Usage
+
 ```
 $ jj -h
 
