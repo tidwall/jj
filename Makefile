@@ -3,7 +3,7 @@ all:
 clean:
 	@rm -f jj
 install: all
-	@cp jsoned /usr/local/bin
+	@cp jj /usr/local/bin
 uninstall: 
 	@rm -f /usr/local/bin/jj
 package:
