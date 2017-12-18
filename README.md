@@ -243,7 +243,7 @@ $ time cat citylots.json | jj -r features.10000.properties.LOT_NUM
 
 real    0m0.344s
 user    0m0.161s
-sys	    0m0.312s
+sys     0m0.312s
 ```
 
 #### Update the lot number for the parcel at index 10000
