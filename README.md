@@ -63,7 +63,7 @@ Examples
 
 ### Getting a value 
 
-jj uses a special [path syntax](https://github.com/tidwall/gjson#path-syntax) for finding values.
+JJ uses a special [path syntax](https://github.com/tidwall/gjson#path-syntax) for finding values.
 
 Get a string:
 ```sh
@@ -272,7 +272,7 @@ sys     0m0.563s
 Josh Baker [@tidwall](http://twitter.com/tidwall)
 
 ## License
-jj source code is available under the MIT [License](/LICENSE).
+JJ source code is available under the MIT [License](/LICENSE).
 
 
 
