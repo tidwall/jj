@@ -208,10 +208,12 @@ func main() {
 	if outb == nil {
 		outb = []byte(outs)
 	}
-	if a.pretty {
-		outb = pretty.Pretty(outb)
-	} else if a.ugly {
-		outb = pretty.Ugly(outb)
+	if a.raw || outt != gjson.String {
+		if a.pretty {
+			outb = pretty.Pretty(outb)
+		} else if a.ugly {
+			outb = pretty.Ugly(outb)
+		}
 	}
 	if !a.notty && isatty.IsTerminal(f.Fd()) {
 		if a.raw || outt != gjson.String {
