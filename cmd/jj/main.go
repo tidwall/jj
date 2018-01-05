@@ -31,7 +31,7 @@ options:
       -r                   Use raw values, otherwise types are auto-detected
       -O                   Performance boost for value updates.
       -D                   Delete the value at the specified key path
-	  --notty              Do not output color or extra formatting
+      --force-notty        Do not output color or extra formatting
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -65,8 +65,8 @@ func parseArgs() args {
 	}
 	help := func() {
 		buf := &bytes.Buffer{}
-		fmt.Fprintf(os.Stderr, "%s\n", tag)
-		fmt.Fprintf(os.Stderr, "%s\n", usage)
+		fmt.Fprintf(buf, "%s\n", tag)
+		fmt.Fprintf(buf, "%s\n", usage)
 		os.Stdout.Write(buf.Bytes())
 		os.Exit(0)
 	}
@@ -79,6 +79,8 @@ func parseArgs() args {
 					switch os.Args[i][j] {
 					default:
 						fail("unknown option argument: \"-%c\"", os.Args[i][j])
+					case '-':
+						fail("unknown option argument: \"%s\"", os.Args[i])
 					case 'p':
 						a.pretty = true
 					case 'u':
@@ -113,8 +115,11 @@ func parseArgs() args {
 			case "-o":
 				a.outfile = &os.Args[i]
 			}
-		case "--notty":
+		case "--force-notty":
 			a.notty = true
+		case "--version":
+			fmt.Fprintf(os.Stdout, "%s\n", tag)
+			os.Exit(0)
 		case "-h", "--help", "-?":
 			help()
 		}
