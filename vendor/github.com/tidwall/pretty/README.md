@@ -57,6 +57,17 @@ Will format the json to:
 }
 ```
 
+## Color
+
+Color will colorize the json for outputing to the screen. 
+
+```json
+result = pretty.Color(json, nil)
+```
+
+Will add color to the result for printing to the terminal.
+The second param is used for a customizing the style, and passing nil will use the default `pretty.TerminalStyle`.
+
 ## Ugly
 
 The following code:
@@ -69,6 +80,7 @@ Will format the json to:
 ```json
 {"name":{"first":"Tom","last":"Anderson"},"age":37,"children":["Sara","Alex","Jack"],"fav.movie":"Deer Hunter","friends":[{"first":"Janet","last":"Murphy","age":44}]}```
 ```
+
 
 ## Customized output
 

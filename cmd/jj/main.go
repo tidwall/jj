@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	isatty "github.com/mattn/go-isatty"
 	"github.com/tidwall/gjson"
 	"github.com/tidwall/pretty"
 	"github.com/tidwall/sjson"
@@ -16,7 +17,7 @@ var (
 	version = "0.0.1"
 	tag     = "jj - JSON Stream Editor " + version
 	usage   = `
-usage: jj [-v value] [-r] [-D] [-O] [-p] [-i infile] [-o outfile] keypath
+usage: jj [-v value] [-purOD] [-i infile] [-o outfile] keypath
 
 examples: jj keypath                      read value from stdin
       or: jj -i infile keypath            read value from infile
@@ -25,11 +26,12 @@ examples: jj keypath                      read value from stdin
 
 options:
       -v value             Edit JSON key path value
+      -p                   Make json pretty, keypath is optional
+      -u                   Make json ugly, keypath is optional
       -r                   Use raw values, otherwise types are auto-detected
       -O                   Performance boost for value updates.
       -D                   Delete the value at the specified key path
-      -p                   Make json pretty, keypath is optional
-      -u                   Make json ugly, keypath is optional
+	  --notty              Do not output color or extra formatting
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -49,6 +51,7 @@ type args struct {
 	keypath   string
 	pretty    bool
 	ugly      bool
+	notty     bool
 }
 
 func parseArgs() args {
@@ -71,6 +74,25 @@ func parseArgs() args {
 	for i := 1; i < len(os.Args); i++ {
 		switch os.Args[i] {
 		default:
+			if len(os.Args[i]) > 1 && os.Args[i][0] == '-' {
+				for j := 1; j < len(os.Args[i]); j++ {
+					switch os.Args[i][j] {
+					default:
+						fail("unknown option argument: \"-%c\"", os.Args[i][j])
+					case 'p':
+						a.pretty = true
+					case 'u':
+						a.ugly = true
+					case 'r':
+						a.raw = true
+					case 'O':
+						a.opt = true
+					case 'D':
+						a.del = true
+					}
+				}
+				continue
+			}
 			if !a.keypathok {
 				a.keypathok = true
 				a.keypath = os.Args[i]
@@ -91,16 +113,8 @@ func parseArgs() args {
 			case "-o":
 				a.outfile = &os.Args[i]
 			}
-		case "-r":
-			a.raw = true
-		case "-p":
-			a.pretty = true
-		case "-u":
-			a.ugly = true
-		case "-D":
-			a.del = true
-		case "-O":
-			a.opt = true
+		case "--notty":
+			a.notty = true
 		case "-h", "--help", "-?":
 			help()
 		}
@@ -117,6 +131,7 @@ func main() {
 	var err error
 	var outb []byte
 	var outs string
+	var outt gjson.Type
 	var f *os.File
 	if a.infile == nil {
 		input, err = ioutil.ReadAll(os.Stdin)
@@ -172,6 +187,7 @@ func main() {
 			if a.raw {
 				outs = res.Raw
 			} else {
+				outt = res.Type
 				outs = res.String()
 			}
 		}
@@ -188,12 +204,23 @@ func main() {
 		outb = []byte(outs)
 	}
 	if a.pretty {
-		f.Write(pretty.Pretty(outb))
+		outb = pretty.Pretty(outb)
 	} else if a.ugly {
-		f.Write(pretty.Ugly(outb))
-	} else {
-		f.Write(outb)
+		outb = pretty.Ugly(outb)
 	}
+	if !a.notty && isatty.IsTerminal(f.Fd()) {
+		if a.raw || outt != gjson.String {
+			outb = pretty.Color(outb, pretty.TerminalStyle)
+		} else {
+			outb = append([]byte(pretty.TerminalStyle.String[0]), outb...)
+			outb = append(outb, pretty.TerminalStyle.String[1]...)
+		}
+		for len(outb) > 0 && outb[len(outb)-1] == '\n' {
+			outb = outb[:len(outb)-1]
+		}
+		outb = append(outb, '\n')
+	}
+	f.Write(outb)
 	f.Close()
 	return
 fail:
