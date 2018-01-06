@@ -17,7 +17,7 @@ var (
 	version = "0.0.1"
 	tag     = "jj - JSON Stream Editor " + version
 	usage   = `
-usage: jj [-v value] [-purOD] [-i infile] [-o outfile] keypath
+usage: jj [-v value] [-purnOD] [-i infile] [-o outfile] keypath
 
 examples: jj keypath                      read value from stdin
       or: jj -i infile keypath            read value from infile
@@ -29,9 +29,9 @@ options:
       -p                   Make json pretty, keypath is optional
       -u                   Make json ugly, keypath is optional
       -r                   Use raw values, otherwise types are auto-detected
+      -n                   Do not output color or extra formatting
       -O                   Performance boost for value updates.
       -D                   Delete the value at the specified key path
-      --force-notty        Do not output color or extra formatting
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -91,6 +91,8 @@ func parseArgs() args {
 						a.opt = true
 					case 'D':
 						a.del = true
+					case 'n':
+						a.notty = true
 					}
 				}
 				continue
