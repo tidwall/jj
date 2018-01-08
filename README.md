@@ -218,7 +218,7 @@ The `-u` flag will compress the json into the fewest characters possible by squa
 
 ## Performance
 
-A quick comparison of jj to [jq](https://stedolan.github.io/jq/). The test [json file](https://github.com/zemirco/sf-city-lots-json) is 180MB file of 206,560 city parcels in San Francisco.
+A quick comparison of jj to [jq](https://stedolan.github.io/jq/). The test [json file](https://github.com/tidwall/sf-city-lots-json) is 180MB file of 206,560 city parcels in San Francisco.
 
 *Tested on a 2015 Macbook Pro running jq 1.5 and jj 1.0.0*
 
