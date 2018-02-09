@@ -63,7 +63,7 @@ Examples
 
 ### Getting a value 
 
-JJ uses a special [path syntax](https://github.com/tidwall/gjson#path-syntax) for finding values.
+JJ uses a [path syntax](https://github.com/tidwall/gjson#path-syntax) for finding values. 
 
 Get a string:
 ```sh
@@ -93,6 +93,26 @@ Get an array value by index:
 ```sh
 $ echo '{"friends":["Tom","Jane","Carol"]}' | jj friends.1
 Jane
+```
+
+## JSON Lines
+
+There's support for [JSON Lines](http://jsonlines.org/) using the `..` path prefix.
+Which when specified, treats the multi-lined document as an array. 
+
+For example:
+
+```
+{"name": "Gilbert", "age": 61}
+{"name": "Alexa", "age": 34}
+{"name": "May", "age": 57}
+```
+
+```
+..#                   >> 4
+..1                   >> {"name": "Alexa", "age": 34}
+..#.name              >> ["Gilbert","Alexa","May"]
+..#[name="May"].age   >> 57
 ```
 
 ### Setting a value
