@@ -30,8 +30,9 @@ options:
       -u                   Make json ugly, keypath is optional
       -r                   Use raw values, otherwise types are auto-detected
       -n                   Do not output color or extra formatting
-      -O                   Performance boost for value updates.
+      -O                   Performance boost for value updates
       -D                   Delete the value at the specified key path
+      -l                   Output array values on multiple lines
       -i infile            Use input file instead of stdin
       -o outfile           Use output file instead of stdout
       keypath              JSON key path (like "name.last")
@@ -52,6 +53,7 @@ type args struct {
 	pretty    bool
 	ugly      bool
 	notty     bool
+	lines     bool
 }
 
 func parseArgs() args {
@@ -93,6 +95,8 @@ func parseArgs() args {
 						a.del = true
 					case 'n':
 						a.notty = true
+					case 'l':
+						a.lines = true
 					}
 				}
 				continue
@@ -138,6 +142,7 @@ func main() {
 	var err error
 	var outb []byte
 	var outs string
+	var outa bool
 	var outt gjson.Type
 	var f *os.File
 	if a.infile == nil {
@@ -195,6 +200,7 @@ func main() {
 				outs = res.Raw
 			} else {
 				outt = res.Type
+				outa = res.IsArray()
 				outs = res.String()
 			}
 		}
@@ -210,7 +216,15 @@ func main() {
 	if outb == nil {
 		outb = []byte(outs)
 	}
-	if a.raw || outt != gjson.String {
+	if a.lines && outa {
+		var outb2 []byte
+		gjson.ParseBytes(outb).ForEach(func(_, v gjson.Result) bool {
+			outb2 = append(outb2, pretty.Ugly([]byte(v.Raw))...)
+			outb2 = append(outb2, '\n')
+			return true
+		})
+		outb = outb2
+	} else if a.raw || outt != gjson.String {
 		if a.pretty {
 			outb = pretty.Pretty(outb)
 		} else if a.ugly {
