@@ -5,7 +5,7 @@
 <br>
 <a href="https://travis-ci.org/tidwall/gjson"><img src="https://img.shields.io/travis/tidwall/gjson.svg?style=flat-square" alt="Build Status"></a>
 <a href="https://godoc.org/github.com/tidwall/gjson"><img src="https://img.shields.io/badge/api-reference-blue.svg?style=flat-square" alt="GoDoc"></a>
-<a href="http://tidwall.com/gjson-play"><img src="https://img.shields.io/badge/play-ground-orange.svg?style=flat-square" alt="GJSON Playground"></a>
+<a href="http://tidwall.com/gjson-play"><img src="https://img.shields.io/badge/%F0%9F%8F%90-playground-9900cc.svg?style=flat-square" alt="GJSON Playground"></a>
 </p>
 
 
@@ -13,8 +13,9 @@
 <p align="center">get json values quickly</a></p>
 
 GJSON is a Go package that provides a [fast](#performance) and [simple](#get-a-value) way to get values from a json document.
-It has features such as [one line retrieval](#get-a-value), [dot notation paths](#path-syntax), [iteration](#iterate-through-an-object-or-array).
-For a command-line tool that uses the GJSON syntax check out [JJ](https://github.com/tidwall/jj).
+It has features such as [one line retrieval](#get-a-value), [dot notation paths](#path-syntax), [iteration](#iterate-through-an-object-or-array), and [parsing json lines](#json-lines).
+
+Also check out [SJSON](https://github.com/tidwall/sjson) for modifying json, and the [JJ](https://github.com/tidwall/jj) command line tool.
 
 Getting Started
 ===============
@@ -30,7 +31,7 @@ $ go get -u github.com/tidwall/gjson
 This will retrieve the library.
 
 ## Get a value
-Get searches json for the specified path. A path is in dot syntax, such as "name.last" or "age". This function expects that the json is well-formed. Bad json will not panic, but it may return back unexpected results. When the value is found it's returned immediately. 
+Get searches json for the specified path. A path is in dot syntax, such as "name.last" or "age". When the value is found it's returned immediately. 
 
 ```go
 package main
@@ -98,8 +99,7 @@ friends.#[first%"D*"].last         >> "Murphy"
 
 ## JSON Lines
 
-There also support for [JSON Lines](http://jsonlines.org/) using the `..` prefix.
-Which when specified, treats the multi-lined document as an array. 
+There's support for [JSON Lines](http://jsonlines.org/) using the `..` prefix, which treats a multilined document as an array. 
 
 For example:
 
@@ -118,19 +118,13 @@ For example:
 ..#[name="May"].age   >> 57
 ```
 
-The `ForEachLines` function will iterate through lines.
+The `ForEachLines` function will iterate through JSON lines.
 
 ```go
 gjson.ForEachLine(json, func(line gjson.Result) bool{
     println(line.String())
     return true
 })
-
-// Outputs:
-// {"name": "Gilbert", "age": 61}
-// {"name": "Alexa", "age": 34}
-// {"name": "May", "age": 57}
-// {"name": "Deloise", "age": 44}
 ```
 
 ## Result Type
@@ -279,6 +273,19 @@ if !value.Exists() {
 if gjson.Get(json, "name.last").Exists() {
 	println("has a last name")
 }
+```
+
+## Validate JSON
+
+The `Get*` and `Parse*` functions expects that the json is well-formed. Bad json will not panic, but it may return back unexpected results.
+
+If you are consuming JSON from an unpredictable source then you may want to validate prior to using GJSON.
+
+```go
+if !gjson.Valid(json) {
+	return errors.New("invalid json")
+}
+value := gjson.Get(json, "name.last")
 ```
 
 ## Unmarshal to a map
