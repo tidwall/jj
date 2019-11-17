@@ -6,7 +6,7 @@
 
 set -e
 
-VERSION="1.2.2"
+VERSION="1.2.3"
 
 cd $(dirname "${BASH_SOURCE[0]}")
 
