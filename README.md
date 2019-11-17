@@ -19,8 +19,7 @@ Getting started
 ### Mac (Homebrew)
 
 ```
-brew tap tidwall/jj
-brew install jj
+brew install tidwall/jj/jj
 ```
 
 ### Build
