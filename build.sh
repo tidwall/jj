@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage:
 #   ./build.sh          # builds jj for the current system architecture
@@ -37,6 +37,7 @@ if [ "$1" == "package" ]; then
 	package "Mac" "darwin" "amd64"
 	package "Linux" "linux" "amd64"
 	package "FreeBSD" "freebsd" "amd64"
+	package "OpenBSD" "openbsd" "amd64"
 	exit
 fi
 
