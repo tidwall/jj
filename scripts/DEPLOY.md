@@ -1,0 +1,12 @@
+
+- Update to the correct gjson/sjson version in go.mod
+- Run `make`
+- Update the version of jj in `build.sh`.
+- `git add files`
+- `git tag v1.7.2` where `1.7.2` is the version in `build.sh`
+- `git push` and `git push --tags`
+- Run `make package`
+- Edit new tag on Github and add the package files
+- Run `openssl sha256 packages/jj-1.7.2-darwin-amd64.zip` where `1.7.2` is the version in `build.sh` 
+- Edit https://github.com/tidwall/homebrew-jj/edit/master/jj.rb and change HOMEBREW_JJ_VERSION and HOMEBREW_JJ_SHA
+- Done

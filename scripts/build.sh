@@ -8,13 +8,13 @@ set -e
 
 VERSION="1.7.2"
 
-cd $(dirname "${BASH_SOURCE[0]}")
+cd $(dirname "${BASH_SOURCE[0]}")/..
 
 package(){
 	echo Packaging $1 Binary
 	bdir=jj-${VERSION}-$2-$3
 	rm -rf packages/$bdir && mkdir -p packages/$bdir
-	GOOS=$2 GOARCH=$3 ./build.sh
+	GOOS=$2 GOARCH=$3 scripts/build.sh
 	if [ "$2" == "windows" ]; then
 		mv jj packages/$bdir/jj.exe
 	else

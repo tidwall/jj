@@ -1,5 +1,5 @@
 all:
-	@./build.sh
+	@scripts/build.sh
 
 clean:
 	@rm -f jj
@@ -11,4 +11,4 @@ uninstall:
 	@rm -f /usr/local/bin/jj
 
 package:
-	@./build.sh package
+	@scripts/build.sh package
