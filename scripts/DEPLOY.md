@@ -5,7 +5,7 @@
 - `git add files`
 - `git commit`
 - `git tag v1.7.2` where `1.7.2` is the version in `build.sh`
-- `git push` and `git push --tags`
+- `git push && git push --tags`
 - Run `make package`
 - Edit new tag on Github and add the package files
 - Run `openssl sha256 packages/jj-1.7.2-darwin-amd64.zip` where `1.7.2` is the version in `build.sh` 
