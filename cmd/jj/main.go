@@ -231,6 +231,9 @@ func main() {
 			outb = pretty.Ugly(outb)
 		}
 	}
+	if !a.pretty && !a.ugly {
+		outb = pretty.Pretty(outb)
+	}
 	if !a.notty && isatty.IsTerminal(f.Fd()) {
 		if a.raw || outt != gjson.String {
 			outb = pretty.Color(outb, pretty.TerminalStyle)
@@ -241,6 +244,9 @@ func main() {
 		for len(outb) > 0 && outb[len(outb)-1] == '\n' {
 			outb = outb[:len(outb)-1]
 		}
+		outb = append(outb, '\n')
+	}
+	if len(outb) > 0 && outb[len(outb)-1] != '\n' {
 		outb = append(outb, '\n')
 	}
 	f.Write(outb)
