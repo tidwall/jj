@@ -204,6 +204,7 @@ func main() {
 				outs = res.String()
 			}
 		}
+
 	}
 	if a.outfile == nil {
 		f = os.Stdout
@@ -231,7 +232,7 @@ func main() {
 			outb = pretty.Ugly(outb)
 		}
 	}
-	if !a.pretty && !a.ugly {
+	if a.raw && (!a.pretty && !a.ugly) {
 		outb = pretty.Pretty(outb)
 	}
 	if !a.notty && isatty.IsTerminal(f.Fd()) {
