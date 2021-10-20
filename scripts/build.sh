@@ -6,7 +6,7 @@
 
 set -e
 
-VERSION="1.8.0"
+VERSION="1.9.1"
 
 cd $(dirname "${BASH_SOURCE[0]}")/..
 
