@@ -150,7 +150,7 @@ $ echo '{"friends":["Tom","Jane","Carol"]}' | jj -v Andy friends.1
 Append an array:
 ```sh
 $ echo '{"friends":["Tom","Jane","Carol"]}' | jj -v Andy friends.-1
-{"friends":["Tom","Andy","Carol","Andy"]}
+{"friends":["Tom","Jane","Carol","Andy"]}
 ```
 
 Set an array value that's past the bounds:
